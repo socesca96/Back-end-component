@@ -1,0 +1,74 @@
+const productModel = require("../models/productModel")
+const { getAllProducts, getProductById, addNewProduct, updateProduct, deleteProduct } = require("../services/productService")
+
+
+exports.getAllProductController = async (req, res) => {
+    try {
+        const products = await getAllProducts();
+        if (products.length === 0) {
+            return res.status(200).send({
+                status:"Success",
+                data: [],
+                message: "No hay productos en la base de datos",
+            })
+        }
+        return res.status(200).send({
+            status: "Success",
+            data: products,
+        })
+    } catch (error) {
+        res.status(500).send({ status: "Failed", error: error.message }) 
+    }
+}
+
+exports.getProductByIdController = async (req, res) => {
+    try {
+        const productId = req.params._id
+        const products = await getProductById(productId)
+        if (!products) {
+           return res.status(404).send("Producto no encontrado")
+        }
+        res.status(200).send(products)
+    } catch (error) {
+        res.status(500).send({ status: "Failed", error: error.message })
+    }
+}
+
+exports.addNewProductController = async (req, res) => {
+    try {
+        const newProduct = await addNewProduct(req.body)
+        await productModel.create(newProduct)
+        res.status(200).send("Se ha añadido correctamente")
+    } catch (error) {
+        res.status(500).send({ status: "Failed", error: error.message })
+    }
+}
+
+exports.updateProductController = async (req, res) => {
+    try {
+        const productId = req.params._id
+        const productUpdated = req.body
+
+        const newProduct = await updateProduct(productId, productUpdated)
+
+        if(!newProduct){
+            return res.status(404).send({ status: "Failed", message: "Producto no encontrado" })
+        }
+        res.status(200).send({product: newProduct})
+    } catch (error) {
+        res.status(500).send({ status: "Failed", error: error.message })   
+    }
+}
+
+exports.deleteProductController = async (req, res) => {
+    try {
+        const productId =req.params._id
+        const product = await deleteProduct(productId)
+        if(!product){
+            return res.status(404).send({ status:"Failed", message: "Producto no encontrado" })
+        }
+        res.status(200).send("Se ha eliminado correctamente")
+    } catch (error) {
+        res.status(500).send({ status:"Failed", error: error.message })
+    }
+}

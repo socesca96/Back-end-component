@@ -4,7 +4,9 @@ require('dotenv').config()
 const connectToDataBase = require('./src/db/db')
 
 //Rutas
-
+const productsRouter = require ("./src/Routes/productRouter")
+const loginRouter = require ("./src/Routes/loginRouter")
+const userRouter = require ("./src/Routes/userRouter")
 //Crear app de express
 const app = express();
 app.use(cors());
@@ -15,8 +17,10 @@ app.use(express.json());
 //Conexión a la base de datos
 connectToDataBase();
 
-//Ruta principal-- ACABAR CUANDO TENGA HECHOS LOS ARCHIVOS DE ROUTER
-// app.use('/', )
+//Rutas principales
+app.use('/api/products', productsRouter)
+app.use('/api/login', loginRouter)
+app.use('/api/user', userRouter)
 
 //Iniciar el servidor
 app.listen(3000, () => {
