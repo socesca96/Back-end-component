@@ -37,8 +37,7 @@ exports.getProductByIdController = async (req, res) => {
 exports.addNewProductController = async (req, res) => {
     try {
         const newProduct = await addNewProduct(req.body)
-        await productModel.create(newProduct)
-        res.status(200).send("Se ha añadido correctamente")
+        res.status(201).send({status: "Success", message: "Se ha añadido correctamente", product: newProduct})
     } catch (error) {
         res.status(500).send({ status: "Failed", error: error.message })
     }
