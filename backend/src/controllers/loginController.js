@@ -3,8 +3,9 @@ const { refreshTokens, loginUser, registerUser } = require("../services/userServ
 
 exports.registerUserController = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
-        const user = await registerUser ({ name, email, password, role })
+        const { name,lastName, address, postalCode, town, province, email, password, role } = req.body;
+        const file = req.file
+        const user = await registerUser ({ name, lastName, address, postalCode, town, province,  email, password, role, file })
 
         res.status(201).send({ message: "El usuario se ha registrado correctamente", user })
     } catch (error) {

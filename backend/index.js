@@ -13,14 +13,15 @@ app.use(cors());
 
 //Middleware básico para analizar JSON en las solicitudes
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 //Conexión a la base de datos
 connectToDataBase();
 
 //Rutas principales
-app.use('/api/products', productsRouter)
-app.use('/api/login', loginRouter)
-app.use('/api/user', userRouter)
+app.use('/products', productsRouter)
+app.use('/login', loginRouter)
+app.use('/user', userRouter)
 
 //Iniciar el servidor
 app.listen(3000, () => {

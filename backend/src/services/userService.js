@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt");
 const { generateToken } = require("../utils/utils");
 
 //Crear el usuario-lo vamos a usar en loginController para hacer el registro
-exports.registerUser = async ({name, email, password, role}) => {
+exports.registerUser = async ({name,lastName, address, postalCode, town, province, email, password, role, file}) => {
+
     //Verificamos si existe el usuario
     const user = await userModel.findOne({email});
     if(user){
@@ -11,12 +12,29 @@ exports.registerUser = async ({name, email, password, role}) => {
         error.code = 11000
         throw error
     }
+    if(!file) {
+        const error = new Error('No se subió ninguna imagen')
+        error.code=400
+        throw error
+    }
+
+    const profileImage = file.filename;
     //Creamos y guardamos el nuevo usuario
     const newUser = new userModel({
-        name, 
+        name,
+        lastName, 
+        address, 
+        postalCode, 
+        town, 
+        province, 
         email, 
         password: await bcrypt.hash(password, 10), 
-        role})
+        role,
+        profileImage
+    })
+    if (file) {
+        newUser.profileImage =file.filename;
+    }
     await newUser.save()
     return newUser
 }

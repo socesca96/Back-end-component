@@ -1,6 +1,7 @@
 const express = require('express')
 const { getUserByIdController, deleteUserController, updateUserController } = require('../controllers/userController')
 const { verifyToken } = require('../Middlewares/auth')
+const upload = require('../Middlewares/uploads')
 
 const router = express.Router()
 
@@ -8,7 +9,7 @@ const router = express.Router()
 router.get('/:id',verifyToken, getUserByIdController )
 
 //PUT
-router.put('/:id', verifyToken, updateUserController)
+router.put('/:id', verifyToken, upload.single('profileImage'), updateUserController)
 
 //DELETE
 router.delete('/:id', verifyToken, deleteUserController)
