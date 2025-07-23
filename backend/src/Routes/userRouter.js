@@ -1,15 +1,16 @@
 const express = require('express')
-const { getUserByIdController, deleteUserController, updateUserController } = require('../controllers/userController')
-const { verifyToken } = require('../Middlewares/auth')
+const { getUserByIdController, deleteUserController, updateUserController, getOwnUserController } = require('../controllers/userController')
+const { verifyToken, verifyAdmin } = require('../Middlewares/auth')
 const upload = require('../Middlewares/uploads')
 
 const router = express.Router()
 
 //GET
-router.get('/:id',verifyToken, getUserByIdController )
+router.get('/me', verifyToken, getOwnUserController)
+router.get('/:id',verifyToken, verifyAdmin,getUserByIdController)
 
 //PUT
-router.put('/:id', verifyToken, upload.single('profileImage'), updateUserController)
+router.put('/user', verifyToken, upload.single('profileImage'), updateUserController)
 
 //DELETE
 router.delete('/:id', verifyToken, deleteUserController)

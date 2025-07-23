@@ -1,4 +1,5 @@
-const { refreshTokens, loginUser, registerUser } = require("../services/userService")
+const { refreshTokens, loginUser, registerUser } = require("../services/userService");
+const { generateToken } = require("../utils/utils");
 
 
 exports.registerUserController = async (req, res) => {
@@ -7,7 +8,16 @@ exports.registerUserController = async (req, res) => {
         const file = req.file
         const user = await registerUser ({ name, lastName, address, postalCode, town, province,  email, password, role, file })
 
-        res.status(201).send({ message: "El usuario se ha registrado correctamente", user })
+        const payload = {
+            _id: user._id,
+            name: user.name,
+            role: user.role
+        }
+
+        const token = generateToken(payload, false)
+        const token_refresh = generateToken(payload, true)
+
+        res.status(201).send({ message: "El usuario se ha registrado correctamente", user, token, token_refresh })
     } catch (error) {
         if(error.code === 11000) {
             return res.status(400).send({ status: "Failed", message: "El usuario ya existe" })

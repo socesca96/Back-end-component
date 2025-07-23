@@ -10,12 +10,12 @@ router.post('/',verifyToken, verifyAdmin, addNewProductController)
 
 //GET (público)
 router.get('/', getAllProductController)
-router.get('/:_id',getProductByIdController)
+router.get('/:id',getProductByIdController)
 
 //PUT- actualizamos producto solo con token y rol admin
-router.put('/:_id', verifyToken, verifyAdmin, updateProductController)
+router.put('/:id', verifyToken, verifyAdmin, updateProductController)
 
 //DELETE- borramos producto solo con token y rol admin
-router.delete('/:_id',verifyToken, verifyAdmin, deleteProductController)
+router.delete('/:id',verifyToken, verifyAdmin, deleteProductController)
 
 module.exports = router

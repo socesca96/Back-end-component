@@ -23,12 +23,15 @@ exports.getAllProductController = async (req, res) => {
 
 exports.getProductByIdController = async (req, res) => {
     try {
-        const productId = req.params._id
+        const productId = req.params.id
         const products = await getProductById(productId)
         if (!products) {
            return res.status(404).send("Producto no encontrado")
         }
-        res.status(200).send(products)
+        res.status(200).send({
+            status: "Success",
+            data: product
+        })
     } catch (error) {
         res.status(500).send({ status: "Failed", error: error.message })
     }
@@ -45,7 +48,7 @@ exports.addNewProductController = async (req, res) => {
 
 exports.updateProductController = async (req, res) => {
     try {
-        const productId = req.params._id
+        const productId = req.params.id
         const productUpdated = req.body
 
         const newProduct = await updateProduct(productId, productUpdated)
@@ -61,12 +64,12 @@ exports.updateProductController = async (req, res) => {
 
 exports.deleteProductController = async (req, res) => {
     try {
-        const productId =req.params._id
+        const productId =req.params.id
         const product = await deleteProduct(productId)
         if(!product){
             return res.status(404).send({ status:"Failed", message: "Producto no encontrado" })
         }
-        res.status(200).send("Se ha eliminado correctamente")
+        res.status(200).send({message: "Se ha eliminado correctamente"})
     } catch (error) {
         res.status(500).send({ status:"Failed", error: error.message })
     }

@@ -1,15 +1,28 @@
 const { getUserInfo, updateUserInfo, deleteUser } = require("../services/userService")
-
+//Para que el admin pueda ver otros perfiles a partir del id
 exports.getUserByIdController = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.params.id
         const user = await getUserInfo(userId)
         if (!user) {
             return res.status(404).send("Usuario no encontrado")
         }
         res.status(200).send(user)
     } catch (error) {
-        res.status(500).send({ status: "Failed", error: error.message })
+        res.status(500).send({ status: "Failed", message: "Error al obtener el usuario", error: error.message })
+    }
+}
+
+//PAra ver solo el propio perfil
+exports.getOwnUserController = async (req, res) => {
+    try {
+        const user = await getUserInfo(req.user._id)
+        if(!user){
+            return res.status(404).send("Usuario no encontrado")
+        }
+        res.status(200).send(user)
+    } catch (error) {
+        res.status(500).send({status: "Failed", message: "Error al obtener el usuario"})
     }
 }
 
@@ -17,6 +30,7 @@ exports.updateUserController = async (req, res) => {
     try {
         const userId = req.user._id;
         const newUser = req.body;
+
         if(req.file) {
             newUser.profileImage = req.file.filename;
         }

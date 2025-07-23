@@ -18,7 +18,6 @@ exports.registerUser = async ({name,lastName, address, postalCode, town, provinc
         throw error
     }
 
-    const profileImage = file.filename;
     //Creamos y guardamos el nuevo usuario
     const newUser = new userModel({
         name,
@@ -30,11 +29,8 @@ exports.registerUser = async ({name,lastName, address, postalCode, town, provinc
         email, 
         password: await bcrypt.hash(password, 10), 
         role,
-        profileImage
+        profileImage: file.filename
     })
-    if (file) {
-        newUser.profileImage =file.filename;
-    }
     await newUser.save()
     return newUser
 }
@@ -76,13 +72,18 @@ exports.refreshTokens = (payload) => {
 
 //Obtener la info del usuario 
 exports.getUserInfo = async (userId) => {
-    const userAux = await userModel.findById(userId)
+    const userAux = await userModel.findById(userId).select('-password')
         
     return userAux
 }
 
 //Actualizar usuario
 exports.updateUserInfo = async (userId, newUser) => {
+    //Si vamos a cambiar la contraseña, la hasheamos antes de guardarla 
+    if (newUser.password) {
+        newUser.password = await bcrypt.hash(newUser.password, 10);
+    }
+
     const userAux = await userModel.findByIdAndUpdate(userId, newUser, {
         new:true,
         runValidators: true,
